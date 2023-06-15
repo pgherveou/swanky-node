@@ -204,17 +204,19 @@ pub fn new_full(
 		telemetry.as_ref().map(|x| x.handle()),
 	);
 
-	let pool_import_commands_stream =
-		transaction_pool.clone().import_notification_stream().map(|_| {
-			sc_consensus_manual_seal::EngineCommand::SealNewBlock {
-				create_empty: false,
-				finalize: false,
-				parent_hash: None,
-				sender: None,
-			}
-		});
-
-	let commands_stream = stream::select(rpc_commands_stream, pool_import_commands_stream);
+	// let pool_import_commands_stream =
+	// 	transaction_pool.clone().import_notification_stream().map(|_| {
+	// 		sc_consensus_manual_seal::EngineCommand::SealNewBlock {
+	// 			create_empty: false,
+	// 			finalize: false,
+	// 			parent_hash: None,
+	// 			sender: None,
+	// 		}
+	// 	});
+	//
+	// let commands_stream = stream::select(rpc_commands_stream, pool_import_commands_stream);
+	log::info!("rpc_commands_stream");
+	let commands_stream = rpc_commands_stream;
 
 	let params = sc_consensus_manual_seal::ManualSealParams {
 		block_import: client.clone(),
